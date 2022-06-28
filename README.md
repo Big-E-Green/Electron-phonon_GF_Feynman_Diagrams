@@ -1,4 +1,4 @@
-# Electron-Phonon_GF_Feynman_Diagrams
+# Electron-phonon Greens function Feynman diagrams
 
 Simmilar to the case of an electron-electron interaction, the electron-phonon interaction once applied to the case of one-particle greens function in the interaction picture produces an expression containing: interactions, verteses and g-naught functions. The combination of these enables the production of Feynamn diagrams.
 
