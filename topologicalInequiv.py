@@ -1,6 +1,5 @@
 from disconnected import *
 from generator import *
-from functions import *
 import itertools
 from copy import deepcopy
 import timeit
@@ -29,29 +28,27 @@ def reparam(trans,inp,numm):
             if q==trans[1]:
                 ii[c][c2]=trans[0]
     sw=swap(trans,numm)
-    #print(ii)
-    #print(trans)
-    #print(sw)
     ii[sw[0]],ii[sw[1]]=ii[sw[1]],ii[sw[0]]
     return ii
 
 def distinctDiagrams(n):
     ss=timeit.default_timer()
+    gen=genall2(n)
     gen2=genall2(n)
-    gen=genall(n)
-    #print(gen2,'2')
-    #print(gen,'1')
-    
+    gen.remove(['11', '1p'])
     nums=[]
-    for i in gen2:
+    for i in gen:
         for j in i:                                              
             nums.append(j)
+    nums2=[]
+    for i in gen2:
+        for j in i:                                              
+            nums2.append(j)
     lev=list(itertools.combinations(nums,2))
-    #print(lev,'lev')
     cool=[]
     ktok=[]
     gell=[]
-    for i in gen2:
+    for i in gen:
         for k in lev:
             if i[0] in k:                                           
                 if i[1] in k:
@@ -65,56 +62,7 @@ def distinctDiagrams(n):
             combs2=list(itertools.combinations(gell,c))
             ktok.append(combs2)                             
     kktok=deepcopy(ktok)
-    print(ktok)
     cool=ktok
-    for i in ktok:
-        for j in i:
-            print(j)
-    #print(lev)
-    lev2=deepcopy(lev)
-    for i in lev2:
-        #print(i)
-        if i[0]=='11':
-            if i in lev:
-                lev.remove(i)
-                #print('rem')
-        if i[1]=='11':
-            if i in lev:
-                lev.remove(i)
-                #print('rem')
-        if i[0]=='1p':
-            if i in lev:
-                lev.remove(i)
-                #print('rem')
-        if i[1]=='1p':
-            if i in lev:
-                lev.remove(i)
-                #print('rem')
-    #print(lev,'lev')
-    
-    lol=[]
-    for i in lev:
-        lel=[]
-        lel.append(i)
-        lol.append(lel)
-    #print(lol)
-    lol2=[]
-
-    for i in lev:
-        #print(i,'iiiiiiii')
-        for k in ktok:
-            for j in k:
-                lel2=[]
-                lel2.append(i)
-                #print(j,'jjjj')
-                #for l in j:
-                    #print(l)
-                    #lel2.append(l)
-                lol2.append(lel2)
-                #print(lel2,'DWQQQQQQQQQQ')
-    print(lol2)
-    #cool.append(lol2)
-    #cool.append(lol)
     combos=deepcopy(lev)
     for i in lev:
         for j in gen:
@@ -206,9 +154,26 @@ def distinctDiagrams(n):
                         paired.append(tmp)
     for i in tmpfin:
         paired.append(i)
-    cool.append(paired)
+
+    pp=deepcopy(paired)
+    for i in paired:
+        for j in i:
+            if j[0]=='11':
+                if i in pp:
+                    pp.remove(i)
+            if j[1]=='11':
+                if i in pp:
+                    pp.remove(i)
+            if j[0]=='1p':
+                if i in pp:
+                    pp.remove(i)
+            if j[1]=='1p':
+                if i in pp:
+                    pp.remove(i)
+    cool.append(pp)
+
     combo=[]
-    for z in paired:
+    for z in pp:
         tmp2=[]
         smashh=[]
         for l in z:
@@ -232,6 +197,7 @@ def distinctDiagrams(n):
     conn=connectedDiagrams(n)
     connn=deepcopy(conn)
     for i in connn:
+        #print(i)
         sav=[]
         for j in cool:
             for k in j:
@@ -240,8 +206,7 @@ def distinctDiagrams(n):
                 c=0
                 while c!=len(k):
                     for q in k:
-                        gens=reparam(q,tmp,nums)
-                        #print(k)
+                        gens=reparam(q,tmp,nums2)
                         tmp=gens                                  
                         c=c+1
                         if c==len(k):
@@ -249,11 +214,7 @@ def distinctDiagrams(n):
                                 if gens!=orig:
                                     connn.remove(gens)
                                     sav.append(gens)
-                                    print(k)
-        print(len(sav))
-        #print(sav)
     st=timeit.default_timer()
     print('Time Inequiv:',st-ss)
     return connn
-#print(distinctDiagrams(3))
 print(len(distinctDiagrams(3)))
