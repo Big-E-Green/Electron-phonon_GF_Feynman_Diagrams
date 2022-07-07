@@ -73,9 +73,9 @@ def loops_path(init,arr):
             tmp=[]
             if safe_check==2:
                 return False, sav_arr, 'odd out'
-
-digs=distinctDiagrams(3,False)
-hartree=genny(3)
+n=3
+digs=distinctDiagrams(n,False)
+hartree=genny(n)
 hartree.remove('11')
 hartree.remove('1p')
 Hartree=[]
@@ -84,15 +84,15 @@ for i in hartree:
     tmp.append(i)
     tmp.append(i)
     Hartree.append(tmp)
-fock=genall2(3)
+fock=genall2(n)
 fock.remove(['11', '1p'])
 Fock=[]
 for i in fock:
     Fock.append(i)
     Fock.append(rev_slice(i))
-bolo=genall2(3)
+bolo=genall2(n)
 bolo.remove(['11', '1p'])
-inters=genall2(3)
+inters=genall2(n)
 
 for i in digs:
     tmparr=[]
@@ -111,7 +111,6 @@ for i in digs:
         for hp in o:
             for d in hp:
                 one.append(d)
-
     tmp_var_hartree=[]
     for k in Hartree:
         if k in i:
@@ -181,7 +180,7 @@ for i in digs:
             i.append(a)
 
 digg=[]
-inter=genny(3)
+inter=genny(n)
 for i in digs:
     if i not in digg:
         digg.append(i)

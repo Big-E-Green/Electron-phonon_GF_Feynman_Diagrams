@@ -77,5 +77,4 @@ def connectedDiagrams(n):
     st=timeit.default_timer()
     print('Time Disconected:',st-s)           
     return connected
-
-print(len(connectedDiagrams(3)))
+#print(len(connectedDiagrams(3)))

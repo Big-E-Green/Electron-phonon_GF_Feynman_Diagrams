@@ -31,11 +31,12 @@ def reparam(trans,inp,numm):
     ii[sw[0]],ii[sw[1]]=ii[sw[1]],ii[sw[0]]
     return ii
 
-def distinctDiagrams(n):
+def distinctDiagrams(n,boo):
     ss=timeit.default_timer()
     gen=genall2(n)
     gen2=genall2(n)
-    gen.remove(['11', '1p'])
+    if boo==True:
+        gen.remove(['11', '1p'])
     nums=[]
     for i in gen:
         for j in i:                                              
@@ -217,4 +218,4 @@ def distinctDiagrams(n):
     st=timeit.default_timer()
     print('Time Inequiv:',st-ss)
     return connn
-print(len(distinctDiagrams(3)))
+#print(len(distinctDiagrams(3,True)))
