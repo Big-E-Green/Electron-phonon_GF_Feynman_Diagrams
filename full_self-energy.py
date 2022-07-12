@@ -135,6 +135,6 @@ Dig_Fin=[]
 for i in Final:
     if i not in Dig_Fin:
         Dig_Fin.append(i)
-#for i in Dig_Fin:
-#    print(i)
-#print(len(Dig_Fin))
+for i in Dig_Fin:
+    print(i)
+print(len(Dig_Fin))
