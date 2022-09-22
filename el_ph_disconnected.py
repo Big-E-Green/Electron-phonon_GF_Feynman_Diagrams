@@ -1,80 +1,72 @@
-from generator import *
-from functions import *
-import timeit
-from copy import deepcopy
+from el_ph_generator import *
+from gen_functions import *
 
-def connectedDiagrams(n):
-    s=timeit.default_timer()
-    gun2=all_diags(n)
-    cheeko=genall(n)
-    ARRAY=gun2.copy()
-    connected=[]
-    for z in ARRAY:
-        zulu=deepcopy(z)
-        ZERO_CHECK=deepcopy(z)
-        true_check=[]
-        for k in z:
-            for p in k:
-                zero=reachzero(p,z)
-                true_check.append(zero[0])
-        if False not in true_check:
-            connected.append(zulu)
-        if False in true_check:
-            if True in true_check:
-                ss=contains_critial_loop(z)
-                if ss==False: 
-                    kk2=tmpp(z)
-                    kk=kk2[0]
-                    for zz in kk2[1]:
-                        if zz in ZERO_CHECK:
-                            ZERO_CHECK.remove(zz)
-                    cc=0
-                    while ZERO_CHECK!=[]:
-                        cc=cc+1
-                        if cc==10:
-                            ZERO_CHECK=[]
-                        for i in kk:
-                            jj=counterpart(i,cheeko)
-                            slc=smallloopcheck(jj,zulu)
-                            if slc[0]==True:
-                                kk.remove(i)
-                                for h in slc[1]:
-                                    ZERO_CHECK.remove(h)
-                                    if ZERO_CHECK==[]:
-                                        connected.append(zulu)
-                            blc=bigloopcheck(jj,z)
-                            if blc[0]==True:
-                                for t in blc[1]:
-                                    if t in ZERO_CHECK:
-                                        ZERO_CHECK.remove(t)
-                                        if ZERO_CHECK==[]:
-                                            connected.append(zulu)
-                                if ZERO_CHECK!=[]:
-                                    dd=checker(jj,blc[1])
-                                    for q in dd:
-                                        if q=='1p':
-                                            dd.remove(q)
-                                        if q=='11':
-                                            dd.remove(q)
-                                    for q in dd:
-                                        if dd!=[]:
-                                            JJ=counterpart(q,cheeko)
-                                            sl=smallloopcheck(JJ,zulu)
-                                            bl=bigloopcheck(JJ,zulu)
-                                            if sl[0]==True:
-                                                dd.remove(q)
-                                                for pp in sl[1]:
-                                                    if pp in ZERO_CHECK:
-                                                        ZERO_CHECK.remove(pp)
-                                                        if ZERO_CHECK==[]:
-                                                            connected.append(zulu)
-                                            if bl[0]==True:
-                                                for tt in bl[1]:
-                                                    if tt in ZERO_CHECK:
-                                                        ZERO_CHECK.remove(tt)
-                                                        if ZERO_CHECK==[]:
-                                                            connected.append(zulu)                                                  
-    st=timeit.default_timer()
-    print('Time Disconected:',st-s)           
-    return connected
-#print(len(connectedDiagrams(3)))
+def connected_check(inp,n):                             # varifies if a diagram is conn or disconn
+    for i in inp:
+        if i==['11', '11'] or i==['1p', '1p']:
+            return False 
+            
+    direct_on_line=[]                                    # finds all on_line varibles
+    for k in var_list(n):                                # saves to said array, if all on line
+        epsilon=reachzero(k,inp)                         # diagram MUST be connected
+        if epsilon[0]==True:
+            for l in epsilon[1]:
+                for g in l:
+                    if g not in direct_on_line:
+                        direct_on_line.append(g)
+                        if len(direct_on_line)==len(inp):
+                            return True
+    final_big_array=[]
+    for q in var_list(n):                                # for each variable in var_list
+        eta=bigloopcheck(q,inp)                          # we look to see if contains a bigloop
+        if eta[0]==True:                                 # and saves if true
+            big_array=[]
+            for j in eta[1]:
+                for h in j:
+                    if h not in big_array:
+                        big_array.append(h)
+            final_big_array.append(big_array)
+    remm=[]
+    for w in final_big_array:                           # if bigloop is true it finds if any
+        for y in w:                                     # part is connected to the main line in
+            if y in direct_on_line:                     # any way, if so the whole bigloop is added
+                if w not in remm:                       # to the direct line
+                    remm.append(w)
+                for t in w:
+                    if t not in direct_on_line:
+                        direct_on_line.append(t)
+            z=counterpart(y,genall2(n))
+            if z in direct_on_line:
+                if w not in remm:
+                    remm.append(w)
+                for t in w:
+                    if t not in direct_on_line:
+                        direct_on_line.append(t)
+    for i in remm:
+        if i in final_big_array:
+            final_big_array.remove(i)
+    if final_big_array!=[]:                           # this is done again but in a while loop
+        counter=5                                     # so all bigloops are checked before false
+        while counter!=0:                             # is returned
+            counter-=1
+            for p in final_big_array:
+                for f in p:
+                    eta=counterpart(f,genall2(n))
+                    if eta in direct_on_line:
+                        if f not in direct_on_line:
+                            direct_on_line.append(f)
+                            if f in p:
+                                p.remove(f)
+    if len(direct_on_line)==len(inp):                  
+        return True
+    for i in var_list(n):                              # we then look for smallloops and see what
+        mu=smallloopcheck(i,inp)                       # they are connected to. They must connect
+        if mu[0]==True:                                # in some way or else it HAS to be disconected
+            var=mu[1][0][0]
+            zeta=counterpart(var,genall2(n))
+            if zeta in direct_on_line:
+                if var not in direct_on_line:
+                    direct_on_line.append(var)
+    if len(direct_on_line)==len(inp):
+        return True                
+    return False
