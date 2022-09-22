@@ -1,5 +1,5 @@
 from el_ph_generator import *
-from gen_functions import *
+from el_ph_genFunctions import *
 
 def connected_check(inp,n):                             # varifies if a diagram is conn or disconn
     for i in inp:
