@@ -1,221 +1,69 @@
-from disconnected import *
-from generator import *
+from re import L
+from el_ph_disconnected import *
+from el_ph_generator import *
 import itertools
-from copy import deepcopy
-import timeit
 
-def swap(translation,numm):
-    cc=[]
-    for i in translation: 
-        c=-1
-        for j in numm:
-            c=c+1
-            if j==i:
-                cc.append(c)
-                if len(cc)==2:
-                    return cc
-                    
-def reparam(trans,inp,numm):
-    c=-1
-    ii=deepcopy(inp)
-    for k in inp:
-        c=c+1
-        c2=-1
-        for q in k:
-            c2=c2+1
-            if q==trans[0]:        
-                ii[c][c2]=trans[1]
-            if q==trans[1]:
-                ii[c][c2]=trans[0]
-    sw=swap(trans,numm)
-    ii[sw[0]],ii[sw[1]]=ii[sw[1]],ii[sw[0]]
-    return ii
+def pair_gen(n):
+    One=[]
+    c=2
+    while n>=c:
+        g=str(c)+str(c)
+        One.append(str(g))
+        f=str(c)+'p'
+        One.append(str(f))
+        c+=1
+    chunked=[]
+    for x in range(0, len(One), 2):
+        chunked.append(One[x:x+2])
+    return chunked
 
-def distinctDiagrams(n,boo):
-    ss=timeit.default_timer()
-    gen=genall2(n)
-    gen2=genall2(n)
-    if boo==True:
-        gen.remove(['11', '1p'])
-    nums=[]
-    for i in gen:
-        for j in i:                                              
-            nums.append(j)
-    nums2=[]
-    for i in gen2:
-        for j in i:                                              
-            nums2.append(j)
-    lev=list(itertools.combinations(nums,2))
-    cool=[]
-    ktok=[]
-    gell=[]
-    for i in gen:
-        for k in lev:
-            if i[0] in k:                                           
-                if i[1] in k:
-                    gell.append(k)
-    combs=list(itertools.combinations(gell,1))
-    ktok.append(combs)
-    c=0
-    for i in gell:
-        c=c+1
-        if c>1:
-            combs2=list(itertools.combinations(gell,c))
-            ktok.append(combs2)                             
-    kktok=deepcopy(ktok)
-    cool=ktok
-    combos=deepcopy(lev)
-    for i in lev:
-        for j in gen:
-            if i[0]==j[0]:
-                if i[1]==j[1]:
-                    combos.remove(i)
-    pairs=[]
-    for i in gen:
+def all_swapps(inp_n):
+    all_trans=[]
+
+    kk_indiv=[]
+    for i in pair_gen(inp_n):       
+        kk_indiv.append(i)           # all individual k-k' tansforms
+    kk_multi=[]                     
+    n_var=inp_n-1                   
+    while n_var!=0:
+        permute=list(itertools.combinations(kk_indiv,n_var))
+        kk_multi.append(permute)
+        n_var-=1
+    all_trans.append(kk_multi)                  # all kk' vars
+    
+    perm=list(itertools.combinations(var_list_noone(inp_n),2))
+    for i in list(kk_indiv):
+        a=i[0]
+        b=i[1]
+        c=(a,b)
+        if c in perm:
+            perm.remove(c)
+    perm2=list(itertools.combinations(perm,2))
+    pair_swaps_indiv=[]
+    for i in perm2:
+        counter1=counterpart(i[0][0],pair_gen(inp_n))
+        counter2=counterpart(i[0][1],pair_gen(inp_n))
+        if i[1][0]==counter1:
+            if i[1][1]==counter2:
+                pair_swaps_indiv.append(i)            # all individual pairswaps
+    pair_multi=[]                     
+    n_var=inp_n-1                     
+    while n_var!=0:
+        permute=list(itertools.combinations(pair_swaps_indiv,n_var))
+        pair_multi.append(permute)
+        n_var-=1
+    all_trans.append(pair_multi)                    # all pairswap vars
+
+    kk_intpair_comb=[]                              # finds all kk' + pairswaps
+    for i in kk_multi:
+        kk_intpair_size=[]
         for j in i:
-            tmp=[]
-            for k in combos:
-                if j==k[0]:
-                    tmp.append(k)
-            pairs.append(tmp)
-    pairs2=deepcopy(pairs)
-    c=-1
-    pairCombs=[]                                             
-    for i in pairs:
-        c=c+1
-        for j in i:
-            tempT=[]
-            c2=-1
-            for k in pairs2:
-                c2=c2+1
-                if c2==c:
-                    c=c
-                else:
-                    for p in k:
-                        temp=[]
-                        temp.append(j)
-                        temp.append(p)
-                        tempT.append(temp)
-            pairCombs.append(tempT)
-    remm=[]
-    for i in pairCombs:
-        for j in i:
-            tetts=[]
-            for k in j:
-                tetts.append(k[0])
-                if len(tetts)==2:
-                    for h in gen:
-                        if tetts[0] in h:
-                            if tetts[1] in h:
-                                remm.append(j)
-    delec=[]
-    for i in remm:
-        tello=[]
-        tello.append(i)
-        delec.append(tello)
-    pairCombs=delec
-    for i in pairCombs:
-        for j in i:
-            tmp=[]
-            for k in j:
-                tmp.append(k[1])
-            if tmp[0]==tmp[1]:
-                for s in pairCombs:
-                    if j in s:
-                        s.remove(j)
-    tmp3=[]
-    for i in pairCombs:
-        for j in i:
-            if j not in tmp3:
-                tmp3.append(j)
-    tmpfin=[]
-    for i in pairCombs:
-        for j in i:
-            ttt=[]
-            for k in j:
-                ttt.append(k[1])
-                if len(ttt)==2:
-                    for g in gen:
-                        if ttt[0] in g:
-                            if ttt[1] in g:
-                                    tmpfin.append(j)
-    pairCombs=tmpfin
-    jj=deepcopy(pairCombs)
-    paired=[]
-    for i in pairCombs:
-        for k in jj:
-            if i[0][0]!=k[0][0]:
-                if i[1][0]!=k[0][0]:
+            for k in pair_multi:
+                for l in k:
                     tmp=[]
-                    for a in i:
-                        tmp.append(a)
-                    for l in k:
-                        tmp.append(l)
-                    if tmp not in paired:
-                        paired.append(tmp)
-    for i in tmpfin:
-        paired.append(i)
-
-    pp=deepcopy(paired)
-    for i in paired:
-        for j in i:
-            if j[0]=='11':
-                if i in pp:
-                    pp.remove(i)
-            if j[1]=='11':
-                if i in pp:
-                    pp.remove(i)
-            if j[0]=='1p':
-                if i in pp:
-                    pp.remove(i)
-            if j[1]=='1p':
-                if i in pp:
-                    pp.remove(i)
-    cool.append(pp)
-
-    combo=[]
-    for z in pp:
-        tmp2=[]
-        smashh=[]
-        for l in z:
-            tmp2.append(l)
-            for i in kktok:      
-                for j in i:
-                    tmp=[]
-                    for q in j:
-                        tmp.append(q)
-                    smash=[]
-                    smash.append(tmp2)
-                    smash.append(tmp)
-                    smashh.append(smash)
-        for w in smashh:
-            ttmp=[]
-            for r in w:
-                for u in r:
-                    ttmp.append(u)
-            combo.append(ttmp)
-    cool.append(combo)
-    conn=connectedDiagrams(n)
-    connn=deepcopy(conn)
-    for i in connn:
-        #print(i)
-        sav=[]
-        for j in cool:
-            for k in j:
-                tmp=i
-                orig=i
-                c=0
-                while c!=len(k):
-                    for q in k:
-                        gens=reparam(q,tmp,nums2)
-                        tmp=gens                                  
-                        c=c+1
-                        if c==len(k):
-                            if gens in connn:
-                                if gens!=orig:
-                                    connn.remove(gens)
-                                    sav.append(gens)
-    st=timeit.default_timer()
-    print('Time Inequiv:',st-ss)
-    return connn
-#print(len(distinctDiagrams(3,True)))
+                    tmp.append(j)
+                    tmp.append(l)
+                    kk_intpair_size.append(tmp)
+        kk_intpair_comb.append(kk_intpair_size)
+    all_trans.append(kk_intpair_comb)
+    return all_trans
