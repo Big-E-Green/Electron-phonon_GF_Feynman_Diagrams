@@ -6,27 +6,23 @@ def var_list(n):                        # var_list creates list of varibles
     c=1
     while n>=c:
         g=str(c)+str(c)
-        vars.append(str(g))
         f=str(c)+'p'
-        vars.append(str(f))
+        vars.extend([str(g),str(f)])
         c+=1
     return vars
 
 def all_diagrams(n):                    # Finds all permutations of var_list
     s=timeit.default_timer()            # then pairs them with the unaltered var_list
     perm=permutations(var_list(n))      # yielding all possible diagrams
-    all_permutations=list(perm)
+    perm=list(perm)
     final=[]
-    for i in all_permutations:
+    for i in perm:
         c=-1
-        tmp2=[]
+        tmp=[]
         for k in var_list(n):
-            c=c+1
-            tmp=[]
-            tmp.append(k)
-            tmp.append(i[c])
-            tmp2.append(tmp)
-        final.append(tmp2)
+            c+=1
+            tmp.append([k,i[c]])
+        final.append(tmp)
     st=timeit.default_timer()
     print('Time Generator:',st-s)
     return final
