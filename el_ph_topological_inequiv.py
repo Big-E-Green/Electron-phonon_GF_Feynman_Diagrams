@@ -1,36 +1,19 @@
-from re import L
 from el_ph_disconnected import *
-from el_ph_generator import *
 import itertools
-
-def pair_gen(n):
-    One=[]
-    c=2
-    while n>=c:
-        g=str(c)+str(c)
-        One.append(str(g))
-        f=str(c)+'p'
-        One.append(str(f))
-        c+=1
-    chunked=[]
-    for x in range(0, len(One), 2):
-        chunked.append(One[x:x+2])
-    return chunked
 
 def all_swapps(inp_n):
     all_trans=[]
-
     kk_indiv=[]
     for i in pair_gen(inp_n):       
-        kk_indiv.append(i)           # all individual k-k' tansforms
+        kk_indiv.append(i)           
     kk_multi=[]                     
     n_var=inp_n-1                   
     while n_var!=0:
         permute=list(itertools.combinations(kk_indiv,n_var))
         kk_multi.append(permute)
         n_var-=1
-    all_trans.append(kk_multi)                  # all kk' vars
-    
+    for i in kk_multi:
+        all_trans.extend(i) 
     perm=list(itertools.combinations(var_list_noone(inp_n),2))
     for i in list(kk_indiv):
         a=i[0]
@@ -45,25 +28,49 @@ def all_swapps(inp_n):
         counter2=counterpart(i[0][1],pair_gen(inp_n))
         if i[1][0]==counter1:
             if i[1][1]==counter2:
-                pair_swaps_indiv.append(i)            # all individual pairswaps
+                pair_swaps_indiv.append(i)            
     pair_multi=[]                     
     n_var=inp_n-1                     
     while n_var!=0:
         permute=list(itertools.combinations(pair_swaps_indiv,n_var))
-        pair_multi.append(permute)
+        for i in permute:
+            pperm=[]
+            for j in i:
+                for k in j:
+                    pperm.append(k)
+            pair_multi.append(pperm)
         n_var-=1
-    all_trans.append(pair_multi)                    # all pairswap vars
-
-    kk_intpair_comb=[]                              # finds all kk' + pairswaps
+    all_trans.extend(pair_multi)                    
+    kk_intpair_combs=[]
     for i in kk_multi:
-        kk_intpair_size=[]
         for j in i:
-            for k in pair_multi:
-                for l in k:
-                    tmp=[]
-                    tmp.append(j)
-                    tmp.append(l)
-                    kk_intpair_size.append(tmp)
-        kk_intpair_comb.append(kk_intpair_size)
-    all_trans.append(kk_intpair_comb)
+            for o in pair_multi:
+                tmp=[]
+                tmp.extend(j)
+                tmp.extend(o)
+                kk_intpair_combs.append(tmp)
+    for i in kk_intpair_combs:
+       all_trans.append(i)
     return all_trans
+
+def main():
+    n=3
+    num_string=[]
+    for i in genall2(n):
+        for j in i:                                              
+            num_string.append(j)
+    connected=[]
+    for i in all_diagrams(n):
+        result=connected_check(i,n)
+        if result==True:
+            connected.append(i)
+    for i in connected: 
+        for j in all_swapps(n): 
+            translated=reparam(j,i,num_string)
+            if translated in connected:
+                connected.remove(translated)
+    for i in connected:
+        print(i)
+
+if __name__ == "__main__":
+    main()
