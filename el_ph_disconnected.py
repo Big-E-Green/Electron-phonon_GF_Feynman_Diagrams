@@ -1,15 +1,16 @@
 from el_ph_generator import *
 from el_ph_genFunctions import *
 
-def connected_check(inp,n):                             # varifies if a diagram is conn or disconn
-    for i in inp:
-        if i==['11', '11'] or i==['1p', '1p']:
-            return False 
-            
+def connected_check(inp,n):                              # varifies if a diagram is conn or disconn
+
+    for i in inp:                                        # removal of those containing 1',1'
+        if i==['11', '11'] or i==['1p', '1p']:           # or 1,1 (efficient)
+            return False  
+
     direct_on_line=[]                                    # finds all on_line varibles
     for k in var_list(n):                                # saves to said array, if all on line
         epsilon=reachzero(k,inp)                         # diagram MUST be connected
-        if epsilon[0]==True:
+        if epsilon[0] is True:
             for l in epsilon[1]:
                 for g in l:
                     if g not in direct_on_line:
@@ -19,7 +20,7 @@ def connected_check(inp,n):                             # varifies if a diagram 
     final_big_array=[]
     for q in var_list(n):                                # for each variable in var_list
         eta=bigloopcheck(q,inp)                          # we look to see if contains a bigloop
-        if eta[0]==True:                                 # and saves if true
+        if eta[0] is True:                                 # and saves if true
             big_array=[]
             for j in eta[1]:
                 for h in j:
@@ -45,9 +46,9 @@ def connected_check(inp,n):                             # varifies if a diagram 
     for i in remm:
         if i in final_big_array:
             final_big_array.remove(i)
-    if final_big_array!=[]:                           # this is done again but in a while loop
-        counter=5                                     # so all bigloops are checked before false
-        while counter!=0:                             # is returned
+    if final_big_array!=[]:                            # this is done again but in a while loop
+        counter=5                                      # so all bigloops are checked before false
+        while counter!=0:                              # is returned
             counter-=1
             for p in final_big_array:
                 for f in p:
@@ -61,7 +62,7 @@ def connected_check(inp,n):                             # varifies if a diagram 
         return True
     for i in var_list(n):                              # we then look for smallloops and see what
         mu=smallloopcheck(i,inp)                       # they are connected to. They must connect
-        if mu[0]==True:                                # in some way or else it HAS to be disconected
+        if mu[0] is True:                                # in some way or else it HAS to be disconected
             var=mu[1][0][0]
             zeta=counterpart(var,genall2(n))
             if zeta in direct_on_line:
