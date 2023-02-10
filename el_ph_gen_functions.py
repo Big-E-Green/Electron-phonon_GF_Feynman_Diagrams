@@ -1,7 +1,7 @@
 from copy import deepcopy
 
-def genall2(n):
-    One=[]
+def genall2_ph(n):                      # generates all varibales and their prime
+    One=[]                              # pairs together e.g [11,1p],[22,2p], etc
     c=0
     while n>=c:
         g=str(c)+str(c)
@@ -15,15 +15,15 @@ def genall2(n):
         chunk.append(One[x:x+2])
     return chunk
 
-def counterpart(n,inters):
-    for i in inters:
+def counterpart_ph(n,inters):           # finds the counterpart to a variable
+    for i in inters:                    # e.g 11->1p or 1p->11 or 22->2p etc
         if i[0]==n:
             return i[1]
         if i[1]==n:
             return i[0]
 
-def smallloopcheck(var,i):
-    c=0
+def smallloopcheck_ph(var,i):              #checks for small loops
+    c=0                                    # e.g. 11,11 or 1p,1p etc
     hold=[]
     tmp=var
     while len(i)!=0:
@@ -36,8 +36,8 @@ def smallloopcheck(var,i):
                 if k[0]!=k[1]:
                     return False, hold
 
-def reachzero(start,array):
-    c=0
+def reachzero_ph(start,array):              # will return true/false with its path
+    c=0                                     # depending on if it reaches 1p or not
     hold=[]
     RAY=array.copy()
     while len(RAY)!=0:         
@@ -49,13 +49,11 @@ def reachzero(start,array):
                 RAY.remove(k)
                 if k[1]=='1p':
                     return True, hold
-                if k[1]=='11':
-                    return True, hold
             if c>10:
                 return False, hold
 
-def bigloopcheck(var,i):
-    c=0
+def bigloopcheck_ph(var,i):               # checks if there are any big loops
+    c=0                                   # if true, returns the loop          
     hold=[]
     tmp=var
     while len(i)!=0:
@@ -73,8 +71,8 @@ def bigloopcheck(var,i):
                 i=[]
                 return False, hold
 
-def var_list_noone(n):
-    vars=[]
+def var_list_noone_ph(n):               # lists all variables in the given n
+    vars=[]                             # e.g. 11,1p,22,2p,... (does not conatin 11 or 1p)
     c=2
     while n>=c:
         g=str(c)+str(c)
@@ -83,7 +81,7 @@ def var_list_noone(n):
         c+=1
     return vars
 
-def pair_gen(n):
+def pair_gen_ph(n):                     # generates pairs e.g. 11,1p for the given n
     One=[]
     c=2
     while n>=c:
@@ -96,8 +94,8 @@ def pair_gen(n):
         chunked.append(One[x:x+2])
     return chunked
 
-def swap(translation,numm):
-    cc=[]
+def swap_ph(translation,numm):      # swapps entries to their correct positions
+    cc=[]                           # keeping the 11,1p,22,2p,... first entry format
     for i in translation: 
         c=-1
         for j in numm:
@@ -107,9 +105,9 @@ def swap(translation,numm):
                 if len(cc)==2:
                     return cc
                     
-def reparam(trans,inp,numm):   
-    ii=deepcopy(inp)
-    for i in trans:
+def reparam_ph(trans,inp,numm):   #this reparamiterises the diagram given
+    ii=deepcopy(inp)              # a translation (trans) and a diagram inp
+    for i in trans:               # num is an index of swapps e.g. 11->1p
         c=-1
         for k in ii:
             c+=1
@@ -120,6 +118,6 @@ def reparam(trans,inp,numm):
                     ii[c][c2]=i[1]      
                 if q==i[1]:
                     ii[c][c2]=i[0]
-        sw=swap(i,numm)
+        sw=swap_ph(i,numm)
         ii[sw[0]],ii[sw[1]]=ii[sw[1]],ii[sw[0]]
     return ii

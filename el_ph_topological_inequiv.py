@@ -1,11 +1,11 @@
 from el_ph_disconnected import *
 import itertools
 
-def all_swapps(inp_n):
+def all_swapps_ph(inp_n):
     all_trans=[]
 
     kk_indiv=[]
-    for i in pair_gen(inp_n):              # gens individual k-->k' transforms
+    for i in pair_gen_ph(inp_n):              # gens individual k-->k' transforms
         kk_indiv.append(i)   
     kk_multi=[]                     
     n_var=inp_n-1                   
@@ -16,7 +16,7 @@ def all_swapps(inp_n):
     for i in kk_multi:
         all_trans.extend(i)               # gens all k-->k' transf permutations
 
-    perm=list(itertools.combinations(var_list_noone(inp_n),2))
+    perm=list(itertools.combinations(var_list_noone_ph(inp_n),2))
     for i in list(kk_indiv):
         a=i[0]
         b=i[1]
@@ -26,8 +26,8 @@ def all_swapps(inp_n):
     perm2=list(itertools.combinations(perm,2))
     pair_swaps_indiv=[]
     for i in perm2:
-        counter1=counterpart(i[0][0],pair_gen(inp_n))
-        counter2=counterpart(i[0][1],pair_gen(inp_n))
+        counter1=counterpart_ph(i[0][0],pair_gen_ph(inp_n))
+        counter2=counterpart_ph(i[0][1],pair_gen_ph(inp_n))
         if i[1][0]==counter1:
             if i[1][1]==counter2:
                 pair_swaps_indiv.append(i)     # gens individual swap pairs
